@@ -1,0 +1,100 @@
+version: '3.8'
+
+services:
+  # MongoDB Database
+  mongodb:
+    image: mongo:7.0
+    container_name: business_website_db
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password123
+      MONGO_INITDB_DATABASE: business_website
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+      - ./docker/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    networks:
+      - business_network
+
+  # Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: business_website_api
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 5000
+      MONGODB_URI: mongodb://admin:password123@mongodb:27017/business_website?authSource=admin
+      JWT_SECRET: your_super_secret_jwt_key_change_in_production
+      JWT_EXPIRE: 30d
+      EMAIL_HOST: smtp.gmail.com
+      EMAIL_PORT: 587
+      EMAIL_USER: your_email@gmail.com
+      EMAIL_PASS: your_app_password
+      EMAIL_FROM: noreply@yourbusiness.com
+      MAX_FILE_UPLOAD: 1000000
+      FILE_UPLOAD_PATH: ./uploads
+      CLIENT_URL: http://localhost:3000
+      ADMIN_EMAIL: admin@yourbusiness.com
+      ADMIN_PASSWORD: AdminPassword123!
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./backend/uploads:/app/uploads
+    depends_on:
+      - mongodb
+    networks:
+      - business_network
+
+  # Frontend Application
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: business_website_frontend
+    restart: unless-stopped
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:5000/api
+      NEXT_PUBLIC_CLIENT_URL: http://localhost:3000
+      NEXT_PUBLIC_BUSINESS_NAME: Your Business Name
+      NEXT_PUBLIC_BUSINESS_EMAIL: info@yourbusiness.com
+      NEXT_PUBLIC_BUSINESS_PHONE: +254700000000
+      NEXT_PUBLIC_BUSINESS_ADDRESS: Your Business Address
+      NEXT_PUBLIC_WHATSAPP_NUMBER: +254700000000
+      NEXT_PUBLIC_FACEBOOK_URL: https://facebook.com/yourbusiness
+      NEXT_PUBLIC_INSTAGRAM_URL: https://instagram.com/yourbusiness
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - business_network
+
+  # Nginx Reverse Proxy (Optional)
+  nginx:
+    image: nginx:alpine
+    container_name: business_website_proxy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./docker/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./docker/ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - business_network
+
+volumes:
+  mongodb_data:
+    driver: local
+
+networks:
+  business_network:
+    driver: bridge
