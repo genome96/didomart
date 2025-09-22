@@ -16,9 +16,9 @@ exports.getCategories = async (req, res) => {
     const categories = await Category.findAll({
       where,
       order: [
-        ['sortOrder', 'ASC'],
-        ['name', 'ASC']
-      ]
+        ["sortOrder", "ASC"],
+        ["name", "ASC"],
+      ],
     });
 
     res.status(200).json({

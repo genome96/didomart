@@ -84,7 +84,7 @@ const initializeDatabase = async () => {
   try {
     await testConnection();
     await syncDatabase();
-    
+
     // Create default admin user and seed data
     require("./utils/seedAdmin")();
   } catch (error) {

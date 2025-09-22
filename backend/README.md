@@ -1,6 +1,6 @@
 # Backend API
 
-This is the backend API for the business website built with Node.js, Express, and MongoDB.
+This is the backend API for the business website built with Node.js, Express, and SQLite.
 
 ## Features
 
@@ -11,7 +11,7 @@ This is the backend API for the business website built with Node.js, Express, an
 - Email notifications
 - Data validation
 - Security middleware
-- MongoDB with Mongoose ODM
+- SQLite with Sequelize ORM
 
 ## API Endpoints
 
@@ -96,7 +96,7 @@ See `.env.example` for all required environment variables.
 
 ## Database Setup
 
-Make sure MongoDB is running and update the `MONGODB_URI` in your `.env` file.
+SQLite database file will be automatically created at `./database.sqlite` on first run. No additional setup required.
 
 ## Default Admin User
 

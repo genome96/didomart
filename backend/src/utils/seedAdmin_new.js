@@ -3,8 +3,8 @@ const { User, Category, Product } = require("../models");
 const seedAdmin = async () => {
   try {
     // Check if admin user already exists
-    const adminExists = await User.findOne({ 
-      where: { email: process.env.ADMIN_EMAIL || "admin@yourbusiness.com" }
+    const adminExists = await User.findOne({
+      where: { email: process.env.ADMIN_EMAIL || "admin@yourbusiness.com" },
     });
 
     if (!adminExists) {
@@ -91,7 +91,11 @@ const seedCategories = async () => {
       ];
 
       await Category.bulkCreate(categories);
-      console.log("Default categories created successfully:", categories.length, "categories");
+      console.log(
+        "Default categories created successfully:",
+        categories.length,
+        "categories"
+      );
     } else {
       console.log("Categories already exist, count:", categoriesCount);
     }
@@ -106,12 +110,21 @@ const seedProducts = async () => {
 
     if (productsCount === 0) {
       const categories = await Category.findAll();
-      console.log("Found categories:", categories.map(c => ({ name: c.name, id: c.id })));
+      console.log(
+        "Found categories:",
+        categories.map((c) => ({ name: c.name, id: c.id }))
+      );
 
       if (categories.length > 0) {
-        const powerToolsCategory = categories.find(c => c.name === "Power Tools");
-        const handToolsCategory = categories.find(c => c.name === "Hand Tools");
-        const solarCategory = categories.find(c => c.name === "Solar Systems");
+        const powerToolsCategory = categories.find(
+          (c) => c.name === "Power Tools"
+        );
+        const handToolsCategory = categories.find(
+          (c) => c.name === "Hand Tools"
+        );
+        const solarCategory = categories.find(
+          (c) => c.name === "Solar Systems"
+        );
 
         const products = [
           {
@@ -122,7 +135,9 @@ const seedProducts = async () => {
               "Heavy-duty 680W impact drill with variable speed control",
             price: 4000,
             originalPrice: 5500,
-            categoryId: powerToolsCategory ? powerToolsCategory.id : categories[0].id,
+            categoryId: powerToolsCategory
+              ? powerToolsCategory.id
+              : categories[0].id,
             images: [
               {
                 url: "impact-drill-680w.jpg",
@@ -155,8 +170,7 @@ const seedProducts = async () => {
             title: "100W Solar Panel Kit",
             description:
               "Complete 100W solar panel kit with charge controller, cables, and mounting hardware. Perfect for off-grid applications and backup power systems.",
-            shortDescription:
-              "Complete 100W solar panel kit with accessories",
+            shortDescription: "Complete 100W solar panel kit with accessories",
             price: 8500,
             originalPrice: 11000,
             categoryId: solarCategory ? solarCategory.id : categories[0].id,
@@ -196,7 +210,9 @@ const seedProducts = async () => {
             shortDescription: "Complete 142-piece tool set with carrying case",
             price: 12500,
             originalPrice: 15000,
-            categoryId: handToolsCategory ? handToolsCategory.id : categories[0].id,
+            categoryId: handToolsCategory
+              ? handToolsCategory.id
+              : categories[0].id,
             images: [
               {
                 url: "tool-set-142pcs.jpg",

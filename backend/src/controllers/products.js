@@ -1,6 +1,6 @@
 const { Product, Category } = require("../models");
 const { body, validationResult } = require("express-validator");
-const { Op, fn, col, where: seqWhere } = require('sequelize');
+const { Op, fn, col, where: seqWhere } = require("sequelize");
 
 // @desc    Get all products
 // @route   GET /api/products
@@ -42,8 +42,12 @@ exports.getProducts = async (req, res) => {
     if (search) {
       const searchTerm = search.toLowerCase();
       where[Op.or] = [
-        seqWhere(fn('LOWER', col('Product.title')), Op.like, `%${searchTerm}%`),
-        seqWhere(fn('LOWER', col('Product.description')), Op.like, `%${searchTerm}%`),
+        seqWhere(fn("LOWER", col("Product.title")), Op.like, `%${searchTerm}%`),
+        seqWhere(
+          fn("LOWER", col("Product.description")),
+          Op.like,
+          `%${searchTerm}%`
+        ),
       ];
     }
 
@@ -57,25 +61,25 @@ exports.getProducts = async (req, res) => {
     let order = [];
     switch (sort) {
       case "price_asc":
-        order.push(['price', 'ASC']);
+        order.push(["price", "ASC"]);
         break;
       case "price_desc":
-        order.push(['price', 'DESC']);
+        order.push(["price", "DESC"]);
         break;
       case "name_asc":
-        order.push(['title', 'ASC']);
+        order.push(["title", "ASC"]);
         break;
       case "name_desc":
-        order.push(['title', 'DESC']);
+        order.push(["title", "DESC"]);
         break;
       case "newest":
-        order.push(['createdAt', 'DESC']);
+        order.push(["createdAt", "DESC"]);
         break;
       case "oldest":
-        order.push(['createdAt', 'ASC']);
+        order.push(["createdAt", "ASC"]);
         break;
       default:
-        order.push(['createdAt', 'DESC']);
+        order.push(["createdAt", "DESC"]);
     }
 
     // Pagination
@@ -88,11 +92,13 @@ exports.getProducts = async (req, res) => {
       order,
       limit: limitNum,
       offset,
-      include: [{
-        model: Category,
-        as: 'category',
-        attributes: ['id', 'name', 'slug']
-      }]
+      include: [
+        {
+          model: Category,
+          as: "category",
+          attributes: ["id", "name", "slug"],
+        },
+      ],
     });
 
     res.status(200).json({
@@ -123,13 +129,13 @@ exports.getFeaturedProducts = async (req, res) => {
         isFeatured: true,
         isActive: true,
       },
-      order: [['createdAt', 'DESC']],
+      order: [["createdAt", "DESC"]],
       limit: parseInt(limit),
       include: {
         model: Category,
-        as: 'category',
-        attributes: ['name', 'slug']
-      }
+        as: "category",
+        attributes: ["name", "slug"],
+      },
     });
 
     res.status(200).json({
@@ -138,7 +144,7 @@ exports.getFeaturedProducts = async (req, res) => {
       data: products,
     });
   } catch (error) {
-    console.error('Error in getFeaturedProducts:', error);
+    console.error("Error in getFeaturedProducts:", error);
     res.status(500).json({
       success: false,
       message: "Server error",
@@ -158,13 +164,13 @@ exports.getHotDeals = async (req, res) => {
         isHotDeal: true,
         isActive: true,
       },
-      order: [['createdAt', 'DESC']],
+      order: [["createdAt", "DESC"]],
       limit: parseInt(limit),
       include: {
         model: Category,
-        as: 'category',
-        attributes: ['name', 'slug']
-      }
+        as: "category",
+        attributes: ["name", "slug"],
+      },
     });
 
     res.status(200).json({
@@ -173,7 +179,7 @@ exports.getHotDeals = async (req, res) => {
       data: products,
     });
   } catch (error) {
-    console.error('Error in getHotDeals:', error);
+    console.error("Error in getHotDeals:", error);
     res.status(500).json({
       success: false,
       message: "Server error",
@@ -187,11 +193,13 @@ exports.getHotDeals = async (req, res) => {
 exports.getProduct = async (req, res) => {
   try {
     const product = await Product.findByPk(req.params.id, {
-      include: [{
-        model: Category,
-        as: 'category',
-        attributes: ['id', 'name', 'slug', 'description']
-      }]
+      include: [
+        {
+          model: Category,
+          as: "category",
+          attributes: ["id", "name", "slug", "description"],
+        },
+      ],
     });
 
     if (!product) {
@@ -222,13 +230,15 @@ exports.getProduct = async (req, res) => {
 // @access  Public
 exports.getProductBySlug = async (req, res) => {
   try {
-    const product = await Product.findOne({ 
+    const product = await Product.findOne({
       where: { slug: req.params.slug },
-      include: [{
-        model: Category,
-        as: 'category',
-        attributes: ['id', 'name', 'slug', 'description']
-      }]
+      include: [
+        {
+          model: Category,
+          as: "category",
+          attributes: ["id", "name", "slug", "description"],
+        },
+      ],
     });
 
     if (!product) {
@@ -275,11 +285,13 @@ exports.getRelatedProducts = async (req, res) => {
         isActive: true,
       },
       limit: 4,
-      include: [{
-        model: Category,
-        as: 'category',
-        attributes: ['id', 'name', 'slug']
-      }]
+      include: [
+        {
+          model: Category,
+          as: "category",
+          attributes: ["id", "name", "slug"],
+        },
+      ],
     });
 
     res.status(200).json({
@@ -309,7 +321,9 @@ exports.createProduct = [
   body("price")
     .isFloat({ min: 0 })
     .withMessage("Price must be a positive number"),
-  body("categoryId").isInt({ min: 1 }).withMessage("Valid category ID is required"),
+  body("categoryId")
+    .isInt({ min: 1 })
+    .withMessage("Valid category ID is required"),
 
   async (req, res) => {
     try {
@@ -335,11 +349,13 @@ exports.createProduct = [
 
       // Fetch the product with category information
       const productWithCategory = await Product.findByPk(product.id, {
-        include: [{
-          model: Category,
-          as: 'category',
-          attributes: ['id', 'name', 'slug']
-        }]
+        include: [
+          {
+            model: Category,
+            as: "category",
+            attributes: ["id", "name", "slug"],
+          },
+        ],
       });
 
       res.status(201).json({
@@ -348,8 +364,8 @@ exports.createProduct = [
         message: "Product created successfully",
       });
     } catch (error) {
-      console.error('Product creation error:', error);
-      if (error.name === 'SequelizeUniqueConstraintError') {
+      console.error("Product creation error:", error);
+      if (error.name === "SequelizeUniqueConstraintError") {
         return res.status(400).json({
           success: false,
           message: "Product with this slug already exists",
@@ -358,7 +374,7 @@ exports.createProduct = [
       res.status(500).json({
         success: false,
         message: "Server error",
-        error: error.message
+        error: error.message,
       });
     }
   },
@@ -461,11 +477,11 @@ exports.deleteProduct = async (req, res) => {
       message: "Product deleted successfully",
     });
   } catch (error) {
-    console.error('Delete product error:', error);
+    console.error("Delete product error:", error);
     res.status(500).json({
       success: false,
       message: "Server error",
-      error: error.message
+      error: error.message,
     });
   }
 };

@@ -28,7 +28,7 @@ exports.protect = async (req, res, next) => {
 
       // Get user from token
       req.user = await User.findByPk(decoded.id, {
-        attributes: { exclude: ['password'] }
+        attributes: { exclude: ["password"] },
       });
 
       if (!req.user) {
@@ -85,16 +85,17 @@ exports.optionalAuth = async (req, res, next) => {
       token = req.headers.authorization.split(" ")[1];
     }
 
-      if (token) {
-        try {
-          const decoded = jwt.verify(token, process.env.JWT_SECRET);
-          req.user = await User.findByPk(decoded.id, {
-            attributes: { exclude: ['password'] }
-          });
-        } catch (err) {
-          // Token invalid, continue without user
-        }
-      }    next();
+    if (token) {
+      try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        req.user = await User.findByPk(decoded.id, {
+          attributes: { exclude: ["password"] },
+        });
+      } catch (err) {
+        // Token invalid, continue without user
+      }
+    }
+    next();
   } catch (error) {
     next();
   }

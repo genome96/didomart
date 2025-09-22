@@ -12,8 +12,8 @@ RUN npm ci --only=production
 # Copy source code
 COPY . .
 
-# Create uploads directory
-RUN mkdir -p uploads
+# Create uploads and database directories
+RUN mkdir -p uploads database
 
 # Expose port
 EXPOSE 5000

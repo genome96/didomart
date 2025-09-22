@@ -1,45 +1,44 @@
-# Full-Stack Business Website
+# Dido E-Commerce Platform
 
-A complete e-commerce website built with Node.js, Express, MongoDB, React, and Next.js. Inspired by modern business websites with professional design and comprehensive features.
+A modern full-stack e-commerce website built with Node.js, Express, SQLite (via Sequelize), React, and Next.js 14. Features a professional admin dashboard, real product catalog, and a beautiful, mobile-first UI. All prices and currency are in Kenyan Shillings (KSh).
 
 ## 🚀 Features
 
 ### Backend API
 
 - **Node.js & Express** - RESTful API with comprehensive endpoints
-- **MongoDB & Mongoose** - Robust data modeling and relationships
-- **JWT Authentication** - Secure user authentication and authorization
-- **Role-based Access Control** - Admin, Editor, and User roles
+- **SQLite & Sequelize** - Fast, file-based database with robust ORM
+- **JWT Authentication** - Secure admin authentication and authorization
+- **Admin Dashboard** - Full product, category, and settings management
 - **File Upload** - Image upload for products and categories
-- **Email Integration** - Contact form notifications and auto-replies
 - **Security** - Helmet, CORS, rate limiting, and input validation
 - **Error Handling** - Centralized error handling and logging
 
-### Frontend (Next.js)
+### Frontend (Next.js 14)
 
-- **React & Next.js** - Server-side rendering and static generation
+- **React & Next.js 14** - Server-side rendering (SSR) for fast, SEO-friendly pages
 - **TypeScript** - Type-safe development
 - **Tailwind CSS** - Modern, responsive design system
 - **Framer Motion** - Smooth animations and transitions
-- **React Query** - Efficient data fetching and caching
-- **React Hook Form** - Form validation and handling
-- **SEO Optimized** - Meta tags, structured data, and optimizations
+- **Context API** - Global settings and state management
+- **SEO Optimized** - Meta tags, Open Graph, and performance
 
 ### Admin Dashboard
 
 - **Product Management** - Add, edit, delete products with categories
 - **Category Management** - Organize products into categories
-- **User Management** - Manage user accounts and roles
+- **Settings Management** - Business info, currency (KSh), WhatsApp, and more
 - **Contact Management** - View and respond to customer inquiries
 - **File Upload** - Image management for products and categories
 - **Dashboard Analytics** - Overview of key metrics
 
 ### Customer Features
 
-- **Product Catalog** - Browse products by category with filtering
-- **Search & Filter** - Find products quickly with advanced filters
-- **Product Details** - Detailed product pages with specifications
-- **Contact Forms** - Easy communication with the business
+- **Product Catalog** - 300+ demo products with real Unsplash images
+- **Shop by Category** - Beautiful category images (Unsplash)
+- **Search & Filter** - Real-time search, price filtering, category filtering
+- **Product Details** - Detailed product pages with specs and related products
+- **Contact Forms** - Dynamic, admin-configurable contact page
 - **Social Integration** - WhatsApp, Facebook, Instagram links
 - **Mobile-First Design** - Optimized for all device sizes
 
@@ -50,22 +49,22 @@ business-website/
 ├── backend/                 # Node.js API server
 │   ├── src/
 │   │   ├── controllers/    # Route controllers
-│   │   ├── models/         # MongoDB models
+│   │   ├── models/         # Sequelize models (SQLite)
 │   │   ├── routes/         # API routes
 │   │   ├── middleware/     # Custom middleware
 │   │   ├── utils/          # Utility functions
 │   │   └── server.js       # Express server
-│   ├── uploads/            # File uploads directory
+│   ├── uploads/            # File uploads directory (images)
 │   ├── package.json
 │   └── .env.example
-├── frontend/               # Next.js React app
+├── frontend/               # Next.js 14 React app
 │   ├── src/
 │   │   ├── pages/          # Next.js pages
 │   │   ├── components/     # React components
 │   │   ├── styles/         # CSS styles
 │   │   ├── lib/            # Utility libraries
 │   │   ├── hooks/          # Custom React hooks
-│   │   ├── context/        # React context
+│   │   ├── contexts/       # React context
 │   │   ├── types/          # TypeScript types
 │   │   └── utils/          # Utility functions
 │   ├── public/             # Static assets
@@ -79,7 +78,6 @@ business-website/
 ### Prerequisites
 
 - Node.js (v18 or later)
-- MongoDB (local or cloud)
 - Git
 
 ### Backend Setup
@@ -109,26 +107,32 @@ cp .env.example .env
 NODE_ENV=development
 PORT=5000
 
+
 # Database
-MONGODB_URI=mongodb://localhost:27017/business_website
+# Uses SQLite (no setup required, file-based)
 
 # JWT Configuration
-JWT_SECRET=your_super_secret_jwt_key_here
+JWT_SECRET=DIDOmart2025
 JWT_EXPIRE=30d
 
 # Email Configuration (Gmail example)
+
+# Email (optional, for contact form notifications)
 EMAIL_HOST=smtp.gmail.com
 EMAIL_PORT=587
 EMAIL_USER=your_email@gmail.com
 EMAIL_PASS=your_app_password
 EMAIL_FROM=noreply@yourbusiness.com
 
+
 # File Upload
 MAX_FILE_UPLOAD=1000000
 FILE_UPLOAD_PATH=./uploads
 
+
 # Client URL
 CLIENT_URL=http://localhost:3000
+
 
 # Admin Configuration
 ADMIN_EMAIL=admin@yourbusiness.com
@@ -143,7 +147,7 @@ npm run dev
 
 The backend API will be available at `http://localhost:5000`
 
-### Frontend Setup
+### Frontend Setup (Next.js 14)
 
 1. Navigate to the frontend directory:
 
@@ -166,15 +170,18 @@ cp .env.example .env.local
 4. Update environment variables in `.env.local`:
 
 ```env
+
 # API Configuration
 NEXT_PUBLIC_API_URL=http://localhost:5000/api
 NEXT_PUBLIC_CLIENT_URL=http://localhost:3000
+
 
 # Business Information
 NEXT_PUBLIC_BUSINESS_NAME=Your Business Name
 NEXT_PUBLIC_BUSINESS_EMAIL=info@yourbusiness.com
 NEXT_PUBLIC_BUSINESS_PHONE=+254700000000
 NEXT_PUBLIC_BUSINESS_ADDRESS=Your Business Address
+
 
 # Social Media
 NEXT_PUBLIC_WHATSAPP_NUMBER=+254700000000
@@ -211,14 +218,13 @@ The frontend will be available at `http://localhost:3000`
 
 ### Products
 
-- `GET /api/products` - Get all products (with filters)
+- `GET /api/products` - Get all products (with filters, pagination)
 - `GET /api/products/featured` - Get featured products
 - `GET /api/products/hot-deals` - Get hot deals
 - `GET /api/products/:id` - Get product by ID
-- `GET /api/products/slug/:slug` - Get product by slug
 - `GET /api/products/:id/related` - Get related products
-- `POST /api/products` - Create product (Admin/Editor)
-- `PUT /api/products/:id` - Update product (Admin/Editor)
+- `POST /api/products` - Create product (Admin)
+- `PUT /api/products/:id` - Update product (Admin)
 - `DELETE /api/products/:id` - Delete product (Admin)
 
 ### Contact
@@ -272,7 +278,7 @@ The frontend will be available at `http://localhost:3000`
 ### Backend Deployment (Node.js)
 
 1. **Environment Variables**: Set up production environment variables
-2. **Database**: Ensure MongoDB is accessible
+2. **Database**: SQLite database file will be automatically created
 3. **Process Manager**: Use PM2 or similar for production
 4. **Reverse Proxy**: Configure Nginx or Apache if needed
 
@@ -303,15 +309,15 @@ The system includes sample data for quick testing:
 - Water Pumps
 - Welding Equipment
 - Weighing Scales
+- Safety Equipment
+- Garden & Outdoor
+- Solar & Energy
+- Construction Equipment
 
 ### Sample Products
 
-- INGCO 680W Impact Drill
-- 100W Solar Panel Kit
-- Electric Submersible Water Pump 1HP
-- Digital Platform Scale 100kg
-- MMA 200A Welding Machine
-- Tool Set 142 Pieces
+- 300+ demo products with real Unsplash images
+- Realistic product names, brands, and specs
 
 ## 🤝 Contributing
 
@@ -346,4 +352,4 @@ Check the CHANGELOG.md for detailed update information.
 
 ---
 
-**Built with ❤️ for modern businesses**
+**Built with ❤️ for modern businesses in Kenya**
