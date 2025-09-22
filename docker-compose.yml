@@ -65,16 +65,13 @@ services:
       - "443:443"
     volumes:
       - ./docker/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./docker/ssl:/etc/nginx/ssl:ro
+      - /etc/letsencrypt:/etc/letsencrypt:ro
     depends_on:
       - frontend
       - backend
     networks:
       - business_network
 
-volumes:
-  # SQLite database will be stored in the backend/database directory
-  # which is mounted as a volume for persistence
 
 networks:
   business_network:
